@@ -16,6 +16,7 @@ import framework.graphics.GameGLRenderer;
 import framework.graphics.SurfaceViewListener;
 import framework.graphics.textures.text.TextAtlas;
 import framework.ui.Button;
+import framework.utils.GraphicsUtils;
 
 /**
  * Created by Morsecode Gaming on 2015-02-22.
@@ -28,6 +29,7 @@ public abstract class GameSurfaceView extends GLSurfaceView implements SurfaceVi
 
     protected UpdateThread updateThread = new UpdateThread();
     protected int backgroundScrollSpeed = 0;
+    protected int foregroundScrollSpeed = 0;
     protected int updateCount = 0;
 
     protected ArrayList<GameObject> backgroundObjects = new ArrayList<>();
@@ -61,14 +63,7 @@ public abstract class GameSurfaceView extends GLSurfaceView implements SurfaceVi
     }
 
     private void calculateScreenSize(Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        Point point = new Point();
-        if (Build.VERSION.SDK_INT >= 17) {
-            display.getRealSize(point);
-        } else {
-            display.getSize(point);
-        }
+        Point point = GraphicsUtils.calculateScreenSize(context);
         screenWidth = point.x;
         screenHeight = point.y;
     }
@@ -239,14 +234,13 @@ public abstract class GameSurfaceView extends GLSurfaceView implements SurfaceVi
         public void run() {
             while (running) {
                 try {
-//                    sleep(16,666666);
                     sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
                 if (!paused) {
-                    if (updateCount == 60) {
+                    if (updateCount == 100) {
                         updateCount = 0;
                     } else {
                         updateCount++;
@@ -256,7 +250,7 @@ public abstract class GameSurfaceView extends GLSurfaceView implements SurfaceVi
                         GameObject object = gameObjects.get(i);
                         object.calculateVelocity();
                         if (object.doesScrollWithBackground()) {
-                            object.getShape().translateX(-backgroundScrollSpeed);
+                            object.getShape().translateX(-foregroundScrollSpeed);
                         }
                     }
 

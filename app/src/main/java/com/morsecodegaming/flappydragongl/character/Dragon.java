@@ -26,7 +26,6 @@ public class Dragon extends GameObject {
 
     @Override
     protected void generateShape() {
-//        shape = new Square(500, 880, 250, 100, Color.MAGENTA);
         shape = new Sprite(500, 880, 250, 100, R.drawable.dragon1_small_uncoloured);
     }
 

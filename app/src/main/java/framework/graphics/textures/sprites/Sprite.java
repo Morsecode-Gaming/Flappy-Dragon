@@ -1,24 +1,35 @@
 package framework.graphics.textures.sprites;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import framework.graphics.GameGLRenderer;
 import framework.graphics.textures.TexturedShape;
 import framework.graphics.tools.Shaders;
+import framework.utils.GraphicsUtils;
 
 /**
  * Created by Morsecode Gaming on 2015-02-22.
  */
 public class Sprite extends TexturedShape {
     // New for textures
-    private int resourceId;
+    protected int resourceId;
 
     // New buffers and handle
-    private FloatBuffer textureBuffer;
+    protected FloatBuffer textureBuffer;
+    protected float u, v, textureWidth, textureHeight;
+
+    protected Sprite(){}
 
     public Sprite(float x, float y, float width, float height, int resourceId) {
         this.resourceId = resourceId;
@@ -28,6 +39,11 @@ public class Sprite extends TexturedShape {
         this.height = height;
         rotationX = 0;
         rotationY = 0;
+
+        u = 0.f;
+        v = 0.f;
+        textureWidth = 1.f;
+        textureHeight = 1.f;
 
         initialize();
         calculateVertices();
@@ -75,12 +91,12 @@ public class Sprite extends TexturedShape {
         setupBuffers = true;
     }
 
-    private void setupTextureBuffer() {
+    protected void setupTextureBuffer() {
         final float[] textureCoordinateData = {
-                0.f, 0.f,
-                0.f, 1.f,
-                1.f, 1.f,
-                1.f, 0.f
+                u, v,
+                u, v+textureHeight,
+                u+textureWidth, v+textureHeight,
+                u+textureWidth, v
         };
 
         ByteBuffer textureByteBuffer = ByteBuffer.allocateDirect(textureCoordinateData.length*4);

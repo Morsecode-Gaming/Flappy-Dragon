@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.morsecodegaming.flappydragongl.GameState;
 import com.morsecodegaming.flappydragongl.R;
 import com.morsecodegaming.flappydragongl.character.Dragon;
+import com.morsecodegaming.flappydragongl.miscellaneous.Background;
 import com.morsecodegaming.flappydragongl.projectiles.Fireball;
 import com.morsecodegaming.flappydragongl.enemies.Catapult;
 import com.morsecodegaming.flappydragongl.enemies.Enemy;
@@ -23,8 +24,10 @@ import framework.graphics.GameGLRenderer;
 import framework.graphics.shape.Square;
 import framework.graphics.textures.sprites.Sprite;
 import framework.graphics.textures.text.TextAtlas;
+import framework.graphics.textures.text.TextManager;
 import framework.physics.forces.Force;
 import framework.ui.Button;
+import framework.ui.Label;
 import framework.utils.Line;
 
 /**
@@ -39,6 +42,7 @@ public class MainView extends GameSurfaceView {
 
     // Game Objects
     public Dragon playerDragon;
+    public Background background;
     public ArrayList<Friendly> friendlies = new ArrayList<>();
     public ArrayList<Enemy> enemies = new ArrayList<>();
     public ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -57,7 +61,8 @@ public class MainView extends GameSurfaceView {
         super.surfaceWasCreated();
 
         // Scroll Background
-        backgroundScrollSpeed = 5;
+        backgroundScrollSpeed = 6;
+        foregroundScrollSpeed = 4;
 
         // Setup initial objects
         setupGame();
@@ -76,8 +81,8 @@ public class MainView extends GameSurfaceView {
     }
 
     private void createBackground() {
-        Sprite background = new Sprite(0, 0, screenWidth, GROUND, R.drawable.sky_small);
-        renderer.addGameShape(background);
+        background = new Background(getContext(), backgroundScrollSpeed, 0, 0, screenWidth, GROUND, R.drawable.robot);
+        renderer.addGameShape(background.getShape());
     }
 
     private void createGround() {
@@ -103,6 +108,9 @@ public class MainView extends GameSurfaceView {
             }
         };
         addButton(pauseButton);
+
+        Label lifeLabel = new Label("Life:", 10, 10, Color.RED);
+        Label fireLabel = new Label("Flame:", 10, 50, Color.RED);
     }
 
     // Game Flow (state-change) Methods
@@ -235,7 +243,7 @@ public class MainView extends GameSurfaceView {
     protected void update() {
         super.update();
 
-        if (updateCount == 60) {
+        if (updateCount == 100) {
             Random random = new Random();
             int eventIndex = random.nextInt(10);
             if (eventIndex == 1) {
@@ -250,6 +258,13 @@ public class MainView extends GameSurfaceView {
                 addGameObject(catapult);
             }
         }
+
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                background.update();
+            }
+        });
 
         playerDragon.getShape().translate(playerDragon.getVelocity());
         if (playerDragon.getShape().getTransformedVector()[1] > (GROUND - playerDragon.getShape().getHeight())) {
