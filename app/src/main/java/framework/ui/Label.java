@@ -47,6 +47,7 @@ public class Label {
             Log.w("BUTTON", "That text is the same as the text already set");
             return;
         }
+        hideText();
         this.text = text;
         showText();
     }

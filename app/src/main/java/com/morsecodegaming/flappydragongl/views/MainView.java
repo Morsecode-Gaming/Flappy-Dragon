@@ -7,13 +7,13 @@ import android.view.MotionEvent;
 
 import com.morsecodegaming.flappydragongl.GameState;
 import com.morsecodegaming.flappydragongl.R;
-import com.morsecodegaming.flappydragongl.character.Dragon;
+import com.morsecodegaming.flappydragongl.player.Dragon;
 import com.morsecodegaming.flappydragongl.miscellaneous.Background;
 import com.morsecodegaming.flappydragongl.projectiles.Fireball;
-import com.morsecodegaming.flappydragongl.enemies.Catapult;
-import com.morsecodegaming.flappydragongl.enemies.Enemy;
-import com.morsecodegaming.flappydragongl.friendlies.Friendly;
-import com.morsecodegaming.flappydragongl.friendlies.House;
+import com.morsecodegaming.flappydragongl.npcs.enemies.Catapult;
+import com.morsecodegaming.flappydragongl.npcs.enemies.Enemy;
+import com.morsecodegaming.flappydragongl.npcs.friendlies.Friendly;
+import com.morsecodegaming.flappydragongl.npcs.friendlies.House;
 import com.morsecodegaming.flappydragongl.projectiles.Projectile;
 
 import java.util.ArrayList;
@@ -22,9 +22,7 @@ import java.util.Random;
 import framework.GameSurfaceView;
 import framework.graphics.GameGLRenderer;
 import framework.graphics.shape.Square;
-import framework.graphics.textures.sprites.Sprite;
 import framework.graphics.textures.text.TextAtlas;
-import framework.graphics.textures.text.TextManager;
 import framework.physics.forces.Force;
 import framework.ui.Button;
 import framework.ui.Label;
@@ -50,6 +48,15 @@ public class MainView extends GameSurfaceView {
     // UI Buttons
     private Button pauseButton;
     private ArrayList<Button> pauseMenu;
+
+    // Game Variables and Labels
+    private int score = 0;
+    private Label lifeLabel;
+    private Label fireLabel;
+    private Label scoreLabel;
+    private Label lifeValue;
+    private Label fireValue;
+    private Label scoreValue;
 
     // Constructors
     public MainView(Context context) {
@@ -109,8 +116,12 @@ public class MainView extends GameSurfaceView {
         };
         addButton(pauseButton);
 
-        Label lifeLabel = new Label("Life:", 10, 10, Color.RED);
-        Label fireLabel = new Label("Flame:", 10, 50, Color.RED);
+        lifeLabel = new Label("Life:", 10, 10, Color.RED);
+        lifeValue = new Label("3", 155, 10, Color.RED);
+        fireLabel = new Label("Flame:", 10, 50, Color.RED);
+        fireValue = new Label("5", 250, 50, Color.RED);
+        scoreLabel = new Label("Score:", 600, 10, Color.RED);
+        scoreValue = new Label("0", 840, 10, Color.RED);
     }
 
     // Game Flow (state-change) Methods
@@ -305,6 +316,17 @@ public class MainView extends GameSurfaceView {
                 checkProjectileHit(projectile);
             }
         }
+
+        updateUI();
+    }
+
+    private void updateUI() {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                scoreValue.setText(Integer.toString(score));
+            }
+        });
     }
 
     private void checkFireballHit(Fireball fireball) {
@@ -318,6 +340,7 @@ public class MainView extends GameSurfaceView {
             for (int i = 0; i < friendlies.size(); i++) {
                 Friendly friendly = friendlies.get(i);
                 if (line.intersects(friendly.getShape())) {
+                    score -= friendly.getPoints();
                     friendlies.remove(friendly);
                     removeGameObject(friendly);
                 }
@@ -325,6 +348,7 @@ public class MainView extends GameSurfaceView {
             for (int i = 0; i < enemies.size(); i++) {
                 Enemy enemy = enemies.get(i);
                 if (line.intersects(enemy.getShape())) {
+                    score += enemy.getPoints();
                     enemies.remove(enemy);
                     removeGameObject(enemy);
                 }
