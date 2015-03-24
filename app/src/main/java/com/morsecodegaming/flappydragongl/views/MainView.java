@@ -116,12 +116,12 @@ public class MainView extends GameSurfaceView {
         };
         addButton(pauseButton);
 
-        lifeLabel = new Label("Life:", 10, 10, Color.RED);
-        lifeValue = new Label("3", 155, 10, Color.RED);
-        fireLabel = new Label("Flame:", 10, 50, Color.RED);
-        fireValue = new Label("5", 250, 50, Color.RED);
-        scoreLabel = new Label("Score:", 600, 10, Color.RED);
-        scoreValue = new Label("0", 840, 10, Color.RED);
+        lifeLabel = new Label("Life:", 10, 10, Color.RED, this);
+        lifeValue = new Label("3", 155, 10, Color.RED, this);
+        fireLabel = new Label("Flame:", 10, 50, Color.RED, this);
+        fireValue = new Label("5", 250, 50, Color.RED, this);
+        scoreLabel = new Label("Score:", 600, 10, Color.RED, this);
+        scoreValue = new Label("0", 840, 10, Color.RED, this);
     }
 
     // Game Flow (state-change) Methods
@@ -321,12 +321,8 @@ public class MainView extends GameSurfaceView {
     }
 
     private void updateUI() {
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                scoreValue.setText(Integer.toString(score));
-            }
-        });
+        scoreValue.setText(Integer.toString(score));
+        lifeValue.setText(Integer.toString(playerDragon.getHealth()));
     }
 
     private void checkFireballHit(Fireball fireball) {

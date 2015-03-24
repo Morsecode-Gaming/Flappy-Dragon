@@ -1,5 +1,6 @@
 package framework.ui;
 
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import framework.graphics.textures.text.TextAtlas;
@@ -10,14 +11,16 @@ import framework.graphics.textures.text.TextAtlas;
 public class Label {
     private int color;
     private int[] textIndices;
+    private GLSurfaceView view;
     protected float x, y, width, height;
     protected String text;
 
-    public Label(String text, float x, float y, int color) {
+    public Label(String text, float x, float y, int color, GLSurfaceView view) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.text = text;
+        this.view = view;
         show();
     }
 
@@ -47,8 +50,13 @@ public class Label {
             Log.w("BUTTON", "That text is the same as the text already set");
             return;
         }
-        hideText();
         this.text = text;
-        showText();
+        view.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                hideText();
+                showText();
+            }
+        });
     }
 }
