@@ -84,17 +84,17 @@ public class MainView extends GameSurfaceView {
     }
 
     private void loadAtlases() {
-        renderer.addGameShape(TextAtlas.getInstance());
+        renderer.addUIShape(TextAtlas.getInstance());
     }
 
     private void createBackground() {
         background = new Background(getContext(), backgroundScrollSpeed, 0, 0, screenWidth, GROUND, R.drawable.robot);
-        renderer.addGameShape(background.getShape());
+        renderer.addBackgroundShape(background.getShape());
     }
 
     private void createGround() {
         Square ground = new Square(0, GROUND, 1920, (int) (screenHeight-GROUND), Color.rgb(139, 69, 19));
-        renderer.addGameShape(ground);
+        renderer.addBackgroundShape(ground);
     }
 
     private void createDragon() {
@@ -104,7 +104,7 @@ public class MainView extends GameSurfaceView {
 
     private void createUI() {
         // Add Pause Button
-        pauseButton = new Button("Pause", (int) (screenWidth-250), 0, 250, 125, Color.YELLOW, Color.RED) {
+         pauseButton = new Button("Pause", (int) (screenWidth-250), 0, 250, 125, Color.YELLOW, Color.RED) {
             @Override
             public void click() {
                 if (gameState == GameState.PLAYING) {
