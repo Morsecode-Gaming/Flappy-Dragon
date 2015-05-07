@@ -87,13 +87,15 @@ public class GameGLRenderer implements GLSurfaceView.Renderer {
             textureManager.setContext(context);
         }
 
+        // Load Backgrounds
+        textureManager.loadImage(R.drawable.sky_small, true);
+
         // Load Images
-        textureManager.loadImage(R.drawable.dragon1_small_uncoloured);
-        textureManager.loadImage(R.drawable.sky_small);
-        textureManager.loadImage(R.drawable.enemy_textures);
+        textureManager.loadImage(R.drawable.dragon1_small_uncoloured, false);
+        textureManager.loadImage(R.drawable.enemy_textures, false);
 
         // Load Fonts
-        textureManager.loadImage(R.drawable.font);
+        textureManager.loadImage(R.drawable.font, false);
     }
 
     @Override

@@ -39,7 +39,7 @@ public abstract class Button {
         this.color = color;
         this.textColor = textColor;
 
-        setText(text);
+//        setText(text);
 
         pressedColor = Color.rgb(Color.red(color) / 2, Color.green(color) / 2, Color.blue(color) / 2);
     }
@@ -72,18 +72,31 @@ public abstract class Button {
         shape.setColor(color);
     }
 
+    public void show() {
+        shape.show();
+        if (text != null) {
+            showText();
+        }
+    }
+
+    private void showText() {
+        textIndices = TextAtlas.getInstance().addText(text, x, y, 1.25f, textColor);
+    }
+
     public void hide() {
         shape.hide();
-        hideText();
+        if (text != null) {
+            hideText();
+        }
     }
 
     private void hideText() {
-
-    }
-
-    public void show() {
-        shape.show();
-        setText(text);
+        if (textIndices != null) {
+            for (int index : textIndices) {
+                TextAtlas.getInstance().removeTexture(index);
+            }
+        }
+        textIndices = null;
     }
 
     public boolean isPressed() {
@@ -99,9 +112,8 @@ public abstract class Button {
             Log.w("BUTTON", "That text is the same as the text already set");
             return;
         }
-
-        textIndices = TextAtlas.getInstance().addText(text, x, y, 1.25f, textColor);
         this.text = text;
+        showText();
     }
 
     public int[] getTextIndices() {
